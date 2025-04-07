@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const protectedPaths = [
-    // "/dashboard",
+    "/profile",
     // "/dashboard/certificate",
     // "/dashboard/mycourses",
     // "/dashboard/allcourses",
@@ -29,7 +29,7 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/",
-    "/dashboard",
+    "/profile",
     "/login",
     "/signup",
     // "/profile",

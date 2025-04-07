@@ -1,13 +1,10 @@
 import Cookies from "js-cookie";
 import {jwtDecode} from "jwt-decode";
-
 interface DecodedToken {
   id?: string;
 }
-
 export const getUserId = (): string | null => {
 const token = Cookies.get("authToken");
-
 if (!token) {
     console.warn("No auth token found in cookies.");
     return null;

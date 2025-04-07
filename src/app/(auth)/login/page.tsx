@@ -42,10 +42,10 @@ const LoginPage: React.FC = () => {
       }
       if (data.token) {
         Cookies.set("authToken", data.token, { expires: 1, secure: true, sameSite: "Strict" });
-        // Cookies.set("user_id", data.user_id, { expires: 1, secure: true, sameSite: "Strict" });
+        Cookies.set("user_id", data.user_id, { expires: 1, secure: true, sameSite: "Strict" });
       }
       toast.success("Login successful! Redirecting...");
-      setTimeout(() => router.push("/dashboard"), 2000);
+      setTimeout(() => router.push("/profile"), 2000);
     } catch (error: any) {
       console.error("Login error:", error);
       toast.error("Something went wrong. Please try again.");

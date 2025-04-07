@@ -28,6 +28,5 @@ const Fruits=new mongoose.Schema({
         required: true 
     }
 })
-
- const FruitsSchema = mongoose.models.fruit|| mongoose.model("fruit",Fruits)
+const FruitsSchema = mongoose.models.fruit|| mongoose.model("fruit",Fruits)
 export default FruitsSchema
