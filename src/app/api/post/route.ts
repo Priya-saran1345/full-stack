@@ -19,7 +19,6 @@ export async function GET(req: Request) {
     } else {
       fruits = await FruitsSchema.find().exec();
     }
-
     return new Response(JSON.stringify(fruits), {
       headers: {
         "Content-Type": "application/json",
@@ -40,6 +39,9 @@ export async function GET(req: Request) {
     );
   }
 }
+
+
+
 export async function POST(request: Request) {
   try {
     // 1️⃣ Parse request data
@@ -64,7 +66,7 @@ export async function POST(request: Request) {
     // 4️⃣ Save the new fruit post
     const newFruit = new FruitsSchema({ ...data, user: userId }); // Ensure user is saved properly
     const savedPost = await newFruit.save();
-
+    
     // 5️⃣ Respond with the saved data
     return new Response(JSON.stringify(savedPost), {
       headers: { "Content-Type": "application/json" },
@@ -79,10 +81,19 @@ export async function POST(request: Request) {
   }
 }
 
+
+
+
+
+
+
+
+
+
 export async function DELETE(request: Request) {
   try {
     const data = await request.json();
-    console.log("Fruits data you want to delete:", data);
+    console.log("Post data you want to delete:", data);
     if (!data._id) {
       return new Response(
         JSON.stringify({ error: "Missing _id in request body" }),

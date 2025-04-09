@@ -189,11 +189,65 @@
 //     </div>
 //   )
 // }
-import React from 'react'
-const page = () => {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client'
+import React, { useEffect, useState } from 'react'
+interface Post {
+  _id: string
+  name: string
+  weight: number
+  weather?: string
+  price?: number
+  color?: string
+  createdAt: string
+}
+
+const AllPosts = () => {
+  const [posts, setPosts] = useState<Post[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const res = await fetch('/api/post', { cache: 'no-store' }) // no-store to ensure fresh data
+        if (!res.ok) throw new Error('Failed to fetch posts')
+        const data = await res.json()
+
+        // Sort by createdAt (latest first)
+        const sorted = data.sort((a: Post, b: Post) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        setPosts(sorted)
+      } catch (err: any) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchPosts()
+  }, [])
+
+  if (loading) return <p className="text-center mt-8">Loading posts...</p>
+  if (error) return <p className="text-red-500 text-center">{error}</p>
+
   return (
-    <div>this is the  </div>
+    <div className="p-4 max-w-4xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4 text-center">All Posts</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {posts.map((post) => (
+          <div key={post._id} className="border rounded-lg p-4 shadow-sm bg-white">
+            <h3 className="text-lg font-semibold">{post.name}</h3>
+            <p><strong>Weight:</strong> {post.weight}</p>
+            {post.weather && <p><strong>Weather:</strong> {post.weather}</p>}
+            {post.price && <p><strong>Price:</strong> ₹{post.price}</p>}
+            {post.color && <p><strong>Color:</strong> {post.color}</p>}
+            <p className="text-xs text-gray-400 mt-2">
+              Posted on: {new Date(post.createdAt).toLocaleString()}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 
-export default page
+export default AllPosts
