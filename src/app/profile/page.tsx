@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 import { FaEdit, FaTrash } from 'react-icons/fa'; // Importing icons
 import toast from 'react-hot-toast';
-
+import { useRouter } from 'next/navigation';
 interface User {
   id: number;
   name: string;
@@ -42,6 +42,8 @@ const [editForm, seteditForm] = useState(false)
     color: ''
   });
 
+  const router = useRouter();
+
   const userId = Cookies.get('user_id');
   useEffect(() => {
     const fetchUserAndPosts = async () => {
@@ -55,7 +57,6 @@ const [editForm, seteditForm] = useState(false)
         if (!userRes.ok) throw new Error('Failed to fetch user');
         const userData = await userRes.json();
         setUser(userData);
-        
         const postRes = await fetch(`/api/post?user=${userId}`);
         if (!postRes.ok) throw new Error('Failed to fetch posts');
         const postData = await postRes.json();
@@ -79,22 +80,27 @@ const [editForm, seteditForm] = useState(false)
       return;
     }
     const postPayload = {
-      userId: userId,
+      // ...(editForm ? {} : { userId: userId }), // If editing, don't include userId
       ...formData,
       weight: parseFloat(formData.weight),
-      price: parseFloat(formData.price)
+      price: parseFloat(formData.price),
     };
+    const token = Cookies.get('authToken'); // make sure this matches how you store it
+
+    console.log('The payload is', postPayload);
     try {
       const res = await fetch('/api/post', {
-        method: 'POST',
+        method: editForm ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // 👈 attach token here
+
         },
         body: JSON.stringify(postPayload)
       });
       if (!res.ok) throw new Error('Failed to add post');
-      toast.success('Post added successfully!');
-      setShowForm(false)
+      toast.success(editForm ? 'Post updated successfully!' : 'Post added successfully!');
+      setShowForm(false); // ← immediately hide form
       const newPost = await res.json();
       setPosts(prev => [...prev, newPost]);
       setFormData({ id: '', name: '', weight: '', weather: '', price: '', color: '' });
@@ -124,9 +130,7 @@ const [editForm, seteditForm] = useState(false)
         },
         body: JSON.stringify({ _id }),
       });
-
       if (!res.ok) throw new Error('Failed to delete post');
-
       toast.success('Post deleted successfully!');
       setPosts(posts.filter(post => post._id !== _id));
     } catch (err: any) {
@@ -134,8 +138,14 @@ const [editForm, seteditForm] = useState(false)
       toast.error('An error occurred while deleting the post');
     }
   };
+
   if (loading) return <div>Loading dashboard...</div>;
   if (error) return <div>Error: {error}</div>;
+  const handleLogout = () => {
+    Cookies.remove('authToken');
+    router.push('/login')
+  };
+
   return (
     <div className="p-4 bg-gray-100 min-h-screen">
       {/* Dashboard Header */}
@@ -150,6 +160,12 @@ const [editForm, seteditForm] = useState(false)
           className="mt-4 md:mt-0 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
         >
           {showForm ? "Close Form" : "Add Post"}
+        </button>
+        <button
+          onClick={() => handleLogout()}
+          className="mt-4 md:mt-0 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        >
+        logout
         </button>
       </div>
   

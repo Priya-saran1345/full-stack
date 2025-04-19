@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 connect();
 export async function POST(req: Request) {
-    const jwtSecret = process.env.JWT_SECRET || 'default_secret_key';
+    const jwtSecret = process.env.JWT_SECRET || 'priya saran';
     try {
         const data = await req.json();
         const { email, password } = data;

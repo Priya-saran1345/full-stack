@@ -1,10 +1,8 @@
 // 'use client'
-
 // import { useEffect, useState } from 'react'
 // import axios from 'axios'
 // import { PackageTable } from './components/package-table'
 // import { motion, AnimatePresence } from 'framer-motion'
-
 // interface PackageItem {
 //   id: number
 //   title: string
@@ -72,7 +70,6 @@
 //           <h1 className="text-[40px] font-bold mb-4">Choose Your Traffic Package</h1>
 //           <p className="text-xl text-gray-600">Select the perfect traffic solution for your needs</p>
 //         </div>
-
 //         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
 //           {data?.map((tier, index) => (
 //             <motion.div
@@ -92,7 +89,6 @@
 //                   ₹{tier?.package_items[0]?.price}
 //                 </div>
 //               </div>
-
 //               <div className="space-y-2 mb-6">
 //                 <div className="flex items-center">
 //                   <span className="mr-2">✔</span>
@@ -109,7 +105,6 @@
 //                   <PackageTable data={tier.package_items} country={tier.country} />
 //                 </div>
 //               </div>
-
 //               <div className="w-full flex justify-center">
 //                 <button
 //                   className="py-3 px-6 rounded-full bg-blue-500 text-white font-semibold hover:bg-blue-600 transition"
@@ -152,7 +147,6 @@
 //                     />
 //                     {emailError && <p className="text-red-500 mt-2">{emailError}</p>}
 //                   </div>
-
 //                   <div className="flex justify-end gap-4">
 //                     <button
 //                       type="button"
@@ -201,19 +195,16 @@ interface Post {
   color?: string
   createdAt: string
 }
-
 const AllPosts = () => {
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const res = await fetch('/api/post', { cache: 'no-store' }) // no-store to ensure fresh data
         if (!res.ok) throw new Error('Failed to fetch posts')
         const data = await res.json()
-
         // Sort by createdAt (latest first)
         const sorted = data.sort((a: Post, b: Post) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         setPosts(sorted)
@@ -225,10 +216,8 @@ const AllPosts = () => {
     }
     fetchPosts()
   }, [])
-
   if (loading) return <p className="text-center mt-8">Loading posts...</p>
   if (error) return <p className="text-red-500 text-center">{error}</p>
-
   return (
     <div className="p-4 max-w-4xl mx-auto">
       <h2 className="text-2xl font-bold mb-4 text-center">All Posts</h2>
@@ -249,5 +238,4 @@ const AllPosts = () => {
     </div>
   )
 }
-
 export default AllPosts
